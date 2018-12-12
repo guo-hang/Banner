@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Banner">
+        <attr name="defaultSrc" format="reference|color"></attr>
+        <attr name="isAutoPlay" format="boolean"></attr>
+        <attr name="delayTime" format="integer"></attr>
+        
+        <attr name="indicatorSize" format="dimension"></attr>
+        <attr name="indicatorMargin" format="dimension"></attr>
+    </declare-styleable>
+</resources>
