@@ -6,6 +6,5 @@ object BannerConfig {
     const val IS_AUTO_PLAY = true
     const val DELAY_TIME = 3000
 
-
     //indicator
 }

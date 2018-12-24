@@ -4,6 +4,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+/*
+  上传到jitpack
+*/
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.guo-hang'
+
 android {
     compileSdkVersion 27
 
@@ -34,7 +40,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     //Kotlin
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     //android库
 //    compileOnly 'com.android.support:appcompat-v7:27.1.1'

@@ -106,13 +106,17 @@ class Banner<T>: RelativeLayout {
 
     //设置默认指示器
     fun setDefaultIndicator(fuc: DefaultIndicator.() -> Unit): Banner<T>  {
-        initIndicator()
+        mIndicators?.apply { this@Banner.removeView(this.rootView()) }
+
+        if (mIndicators !is DefaultIndicator) mIndicators = DefaultIndicator(context)
         (mIndicators as? DefaultIndicator)?.fuc()
         return this
     }
 
     //自定义指示器
     fun setCustomIndicator(indicator: IIndicator): Banner<T>  {
+        mIndicators?.apply { this@Banner.removeView(this.rootView()) }
+
         mIndicators = indicator
         return this
     }
@@ -158,21 +162,27 @@ class Banner<T>: RelativeLayout {
 
     //
     private fun setViewPager() {
-        mViewPager?.adapter = object : PagerAdapter() {
-            override fun isViewFromObject(view: View, `object`: Any) = view === `object`
+        mViewPager?.adapter?.apply {
+            mPagers.clear()
+            this.notifyDataSetChanged()
+            mCurPosition = 0
+        } ?: apply {
+            mViewPager?.adapter = object : PagerAdapter() {
+                override fun isViewFromObject(view: View, `object`: Any) = view === `object`
 
-            override fun getCount() = mData?.size ?: 0
+                override fun getCount() = mData?.size ?: 0
 
-            override fun instantiateItem(container: ViewGroup, position: Int): Any {
-                val view = if (position in 0 until mPagers.size) mPagers[position] else
-                    mCreatePage(mData!![position]).apply { mPagers.add(this) }
+                override fun instantiateItem(container: ViewGroup, position: Int): Any {
+                    val view = if (position in 0 until mPagers.size) mPagers[position] else
+                        mCreatePage(mData!![position]).apply { mPagers.add(this) }
 
-                container.addView(view)
-                return view
-            }
+                    container.addView(view)
+                    return view
+                }
 
-            override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-                container.removeView(`object` as View)
+                override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+                    container.removeView(`object` as View)
+                }
             }
         }
     }
@@ -180,9 +190,11 @@ class Banner<T>: RelativeLayout {
     //初始化指示器
     private fun initIndicator() {
         if (null == mIndicators) {
-            mIndicators = DefaultIndicator(context).apply {
-                this@Banner.addView(this , this.indicatorParams())
-            }
+            mIndicators = DefaultIndicator(context)
+        }
+
+        mIndicators?.apply {
+            this@Banner.addView(this.rootView() , this.indicatorParams())
         }
     }
 

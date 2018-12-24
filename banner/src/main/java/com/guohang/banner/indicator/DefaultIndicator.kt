@@ -5,11 +5,12 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.AttributeSet
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 
-class DefaultIndicator: LinearLayout , IIndicator{
+class DefaultIndicator: IIndicator {
     private var mCurPosition = 0
     private var mCount = 0
     private var mIndicatorSize = dp2px(8)
@@ -17,34 +18,39 @@ class DefaultIndicator: LinearLayout , IIndicator{
     private var mColorSelected = Color.WHITE
     private var mColorUnSelected = Color.GRAY
     private var mLayoutParams: RelativeLayout.LayoutParams? = null
+    private lateinit var mContext: Context
+    private val mRootView by lazy { LinearLayout(mContext) }
 
-    constructor(context: Context?) : this(context , null)
-    constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs , 0)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context) {
+        mContext = context
+    }
+
+    override fun rootView(): View = mRootView
 
     override fun setCount(count: Int) {
-        mCount = count
+        if (mCount != 0) mRootView.removeAllViews()
 
+        mCount = count
         for (index in 0 until count) {
-            ImageView(context).apply {
+            ImageView(mContext).apply {
                 layoutParams = LinearLayout.LayoutParams(mIndicatorSize , mIndicatorSize).apply {
                     leftMargin = mIndicatorMargin
                     rightMargin = mIndicatorMargin
                 }
 
+
                 setImageDrawable(getBg())
                 isSelected = index == mCurPosition
 
-                this@DefaultIndicator.addView(this)
-
+                mRootView.addView(this)
             }
         }
     }
 
     override fun select(position: Int) {
         if (position in  0..mCount) {
-            getChildAt(mCurPosition).isSelected = false
-            getChildAt(position).isSelected = true
+            mRootView.getChildAt(mCurPosition).isSelected = false
+            mRootView.getChildAt(position).isSelected = true
             mCurPosition = position
         }
     }
@@ -95,5 +101,5 @@ class DefaultIndicator: LinearLayout , IIndicator{
         mLayoutParams = params
     }
 
-    private fun dp2px(dp: Int) = (context.resources.displayMetrics.density * dp + 0.5).toInt()
+    private fun dp2px(dp: Int) = (mContext.resources.displayMetrics.density * dp + 0.5).toInt()
 }
