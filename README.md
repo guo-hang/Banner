@@ -1,6 +1,6 @@
 Gradle Setup
 =============
-1.In your root build.gradle: '
+1.In your root build.gradle:
   
 	allprojects {
 		repositories {
